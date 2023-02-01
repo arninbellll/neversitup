@@ -1,6 +1,6 @@
 <template>
   <v-app style="background-image: linear-gradient(0deg, #ebf3f9, #b2e7d6)">
-    <v-container fill-height class="pa-4">
+    <v-container fill-height class="pa-4" style="justify-content: center;">
       <v-form ref="form" lazy-validation v-model="valid">
         <v-layout row wrap class="ma-0" align-center justify-center>
           <v-flex lg10 md12 xs12 class="pa-2">

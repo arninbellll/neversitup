@@ -53,6 +53,8 @@
                   <br />
                   <br />
                   <span>Empty press ' + ' for add new todo</span>
+                  <br />
+                  <br />
                 </v-flex>
               </v-layout>
               <v-divider></v-divider>
@@ -62,12 +64,18 @@
                         <v-icon color="white">{{ icons.mdiPlus }}</v-icon>
                     </v-btn>
                 </div>
-                <div class="pa-2">
-                    <v-badge  v-if="listDone.length > 0" offset-x="15" offset-y="15" color="#f4784b" :content="listDone.length">
-                        <v-btn v-if="listDone.length > 0" class="" color="#f25822" fab @click="fn_deleteTodo()">
+                <div class="pa-2" v-if="listDone.length > 0">
+                    <v-badge offset-x="15" offset-y="15" color="#f4784b" :content="listDone.length">
+                        <v-btn class="" color="#f25822" fab @click="fn_deleteTodo()">
                             <v-icon color="white">{{ icons.mdiCloseCircleOutline}}</v-icon>
                         </v-btn>
                     </v-badge>
+                   
+                </div>
+                <div class="pa-2" v-if="listDone.length > 0">
+                   <v-btn class="" color="#f6c54e" fab @click="open_dialogBonus = true">
+                        <v-icon color="white">{{ icons.mdiStarOutline}}</v-icon>
+                    </v-btn>
                 </div>
               </v-card-actions>
             </v-card-text>
@@ -81,6 +89,7 @@
       :id="id"
       @close="fn_close()"
     ></DialogDetail>
+        <DialogBonus :show="open_dialogBonus" @close="fn_close()" />
     <v-overlay :value="overlay">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -92,14 +101,16 @@ import {
   mdiCheckCircleOutline,
   mdiCloseCircleOutline,
   mdiListBoxOutline,
+  mdiStarOutline,
 } from "@mdi/js";
 import Converter from "../converter/formateDateTime";
 import DialogAdd from "../components/dialog_addTodo.vue";
 import DialogDetail from "../components/dialog_detailTodo.vue";
+import DialogBonus from "../components/dialog_bonus.vue"
 import Swal from "sweetalert2";
 
 export default {
-  components: { DialogAdd, DialogDetail },
+  components: { DialogAdd, DialogDetail, DialogBonus },
   data() {
     return {
       icons: {
@@ -107,11 +118,13 @@ export default {
         mdiCheckCircleOutline,
         mdiCloseCircleOutline,
         mdiListBoxOutline,
+        mdiStarOutline,
       },
       loading: false,
       overlay: false,
       open_dialogAdd: false,
       open_dialogDetail: false,
+      open_dialogBonus: false,
       id: "",
       listMock: [
         { text: "TO Do 1", date: "10/10/2023" },
@@ -172,6 +185,7 @@ export default {
               title: "Delete todo",
               text: "Delete to do in your task success!",
             });
+            this.listDone = [],
             this.fn_getListTodo();
           } catch (error) {
             console.log(error);
@@ -199,6 +213,7 @@ export default {
       this.fn_getListTodo();
       this.open_dialogDetail = false;
       this.open_dialogAdd = false;
+      this.open_dialogBonus = false;
     },
     // แปลงวันที่จาก timestamp
     fn_formatdatetimestamp(_date, _format) {
